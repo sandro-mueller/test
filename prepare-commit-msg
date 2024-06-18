@@ -1,0 +1,28 @@
+
+#!/bin/bash
+
+# Get the branch name
+branch_name=$(git symbolic-ref --short HEAD)
+
+# Extract the ticket number using regex
+if [[ "$branch_name" =~ .*/(#?[0-9]+).* ]]; then
+  ticket_number="${BASH_REMATCH[1]}"
+  # Remove the # for the ticket link
+  ticket_number_for_link="${ticket_number/#\#/}"
+else
+  ticket_number=""
+  ticket_number_for_link=""
+fi
+
+# If a ticket number was found, append it to the commit message body
+if [ -n "$ticket_number" ]; then
+  # The first parameter to this script is the name of the file that contains the commit message
+  commit_msg_file=$1
+
+  # Construct the link (modify the base URL to match your tracking system)
+  ticket_link="https://jira.cgm.ag/browse/DOCMTL-$ticket_number_for_link"
+
+  # Append the ticket number and link to the commit message body
+  echo -e "\n\nTicket: $ticket_number" >> "$commit_msg_file"
+  echo -e "Link: $ticket_link" >> "$commit_msg_file"
+fi

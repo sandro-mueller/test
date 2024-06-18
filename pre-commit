@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get the branch name
+branch_name=$(git symbolic-ref --short HEAD)
+
+# Check if the branch name contains a ticket number (#NNNN)
+if [[ ! "$branch_name" =~ .*/#([0-9]{1,})/.* ]]; then
+  echo "Error: Branch name must contain a ticket number in the format #NNNN."
+  echo "Example: type/#1234/description"
+  exit 1
+fi
